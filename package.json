@@ -6,7 +6,8 @@
   "scripts": {
     "start": "set BACKEND_URL=https://fbchatbot-ui.herokuapp.com && webpack serve --mode development --config webpack.dev.js",
     "start:local": "set BACKEND_URL=http://localhost:4000 && webpack serve --mode development --config webpack.dev.js",
-    "build": "set BACKEND_URL=https://fbchatbot-ui.herokuapp.com && webpack --mode production --config webpack.prod.js && node server.js",
+    "build": "set BACKEND_URL=https://fbchatbot-ui.herokuapp.com && webpack --mode production --config webpack.prod.js",
+    "serve": "node server.js",
     "test": "jest -c jest.config.json --watch"
   },
   "repository": {
