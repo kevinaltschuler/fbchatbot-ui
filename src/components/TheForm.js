@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import ErrorButtonComponent from './ErrorButtonComponent';
+import StarComponent from './StarComponent';
 
 const Container = styled.div`
   display: flex;
@@ -39,11 +40,17 @@ const StyledButton = styled.button`
   }
 `;
 
-const TheForm = () => {
+const TheForm = ({ onSuccess }) => {
   const [review, setReview] = useState('');
+  const [starValue, setStarValue] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const submitReview = () => {
+    if (starValue <= 0 || review === '') {
+      setError('please fill out all required fields');
+    }
+
     var baseurl =
       process.env.NODE_ENV === 'production'
         ? 'https://fb-app-test-kdawg.herokuapp.com'
@@ -57,11 +64,13 @@ const TheForm = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ data: review }),
+      body: JSON.stringify({ data: { review, starValue } }),
     })
       .then((res) => {
         setLoading(false);
         setReview('');
+        setStarValue(0);
+        onSuccess();
       })
       .catch((err) => {
         throw Error(`err in the form!: ${err}`);
@@ -73,15 +82,27 @@ const TheForm = () => {
   return (
     <Container>
       give us your review
+      <br />
+      <br />
+      <StarComponent
+        starCount={20}
+        onChange={(val) => {
+          setError(null);
+          setStarValue(val);
+        }}
+        rating={starValue}
+      />
       <StyledForm
         type="text"
         name="review"
         onChange={({ target: { value } }) => {
+          setError(null);
           setReview(value);
         }}
         value={review}
       />
       {loading && 'LOADING!'}
+      {error && `error!: ${error}`}
       <StyledButton disabled={loading} onClick={submitReview}>
         submit
       </StyledButton>
