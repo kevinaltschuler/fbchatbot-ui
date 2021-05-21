@@ -1,6 +1,7 @@
 // webpack.config.js
 const path = require('path');
 const webpack = require('webpack');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './src/index.js', // our entry point, as mentioned earlier
@@ -18,14 +19,11 @@ module.exports = {
     extensions: ['*', '.js'],
   },
   output: {
-    path: path.resolve(__dirname, 'dist/'),
-    publicPath: '/dist/',
+    path: path.resolve(__dirname, 'public/'),
+    publicPath: '/',
     filename: 'bundle.js',
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.DefinePlugin({
-      'process.env.BACKEND_URL': JSON.stringify(process.env.BACKEND_URL),
-    }),
+    new CopyWebpackPlugin({ patterns: [{ from: './public/index.html' }] }),
   ],
 };
