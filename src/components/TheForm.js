@@ -44,18 +44,28 @@ const TheForm = () => {
   const [loading, setLoading] = useState(false);
 
   const submitReview = () => {
+    var baseurl =
+      process.env.NODE_ENV === 'production'
+        ? 'https://fb-app-test-kdawg.herokuapp.com'
+        : 'http://localhost:4000';
+
     setLoading(true);
-    const response = fetch('http://localhost:4000/save-request', {
+    const response = fetch(`${baseurl}/save-request`, {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: review,
-    }).then((res) => {
-      setLoading(false);
-    });
+      body: JSON.stringify({ data: review }),
+    })
+      .then((res) => {
+        setLoading(false);
+        setReview('');
+      })
+      .catch((err) => {
+        throw Error(`err in the form!: ${err}`);
+      });
 
     // make the request
   };
@@ -69,6 +79,7 @@ const TheForm = () => {
         onChange={({ target: { value } }) => {
           setReview(value);
         }}
+        value={review}
       />
       {loading && 'LOADING!'}
       <StyledButton disabled={loading} onClick={submitReview}>
